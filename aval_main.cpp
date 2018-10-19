@@ -113,24 +113,24 @@ int main(){
 				for(int j=41; j>=0; j--){
 					if(j>11) H3[i][j] = 0;
 					else if(i>=21) H3[i][j] = -bet;
-					else if(j<11 && j!=10){
+					else if(j<=11){
 						for(int k=1; k<=10; k++){
 							H3[i][j] += p(k)*max(H3[i+k][j], E[i+k][j]);
 						}
 					}
-					else if(j==10){
-						for(int k=2; k<=10; k++){
-							float temp = 0.0;
-							for(int l=2; l<=10; l++){
-								temp += p(l)*E[i+k][l+j];
-							}
-							temp += p(1)*(-1.5*bet);
-							H3[i][j] += p(k)*max(H3[i+k][j], temp);
-						}
-					}
-					else if(j==11){
+					// else if(j==10){
+					// 	for(int k=2; k<=10; k++){
+					// 		float temp = 0.0;
+					// 		for(int l=2; l<=10; l++){
+					// 			temp += p(l)*E[i+k][l+j];
+					// 		}
+					// 		temp += p(1)*(-1.5*bet);
+					// 		H3[i][j] += p(k)*max(H3[i+k][j], temp);
+					// 	}
+					// }
+					// else if(j==11){
 
-					}
+					// }
 				}
 			}
 		}
@@ -157,56 +157,152 @@ int main(){
 					if(j>11) H1[i][j] = 0;
 					else if(i>=21) H1[i][j] = -bet;
 					else if(j>1){
-						for(int k=2; k<=10; k++){
+						if(i==0){
+							for(int k=2; k<=10; k++){
+								float temp=0.0;
+								for(int l=2; l<=10; l++){
+									temp += p(l)*E[i+k][j+l];
+								}
+								temp += p(1)*G[i+k][j+11];
+								H1[i][j] += p(k)*max(H1[i+k][j], temp);
+							}
+							H1[i][j] += p(1)*(1.5*bet);
+						}
+						if(i==1){
+							for(int k=2; k<=9; k++){
+								float temp=0.0;
+								for(int l=2; l<=10; l++){
+									temp += p(l)*E[i+k][j+l];
+								}
+								temp += p(1)*G[i+k][j+11];
+								H1[i][j] += p(k)*max(H1[i+k][j], temp);
+							}
 							float temp=0.0;
 							for(int l=2; l<=10; l++){
-								temp += p(l)*E[i+k][j+l];
+								temp += p(l)*E[i+11][j+l];
 							}
-							temp += p(1)*G[i+k][j+11];
-							H1[i][j] += p(k)*max(H1[i+k][j], temp);
+							temp += p(1)*G[i+11][j+11];
+							H1[i][j] += p(1)*max(H2[i+11][j], temp);
+							H1[i][j] += p(10)*(1.5*bet);
 						}
-						float temp=0.0;
-						for(int l=2; l<=10; l++){
-							temp += p(l)*E[i+11][j+l];
+						else{
+							for(int k=2; k<=10; k++){
+								float temp=0.0;
+								for(int l=2; l<=10; l++){
+									temp += p(l)*E[i+k][j+l];
+								}
+								temp += p(1)*G[i+k][j+11];
+								H1[i][j] += p(k)*max(H1[i+k][j], temp);
+							}
+							float temp=0.0;
+							for(int l=2; l<=10; l++){
+								temp += p(l)*E[i+11][j+l];
+							}
+							temp += p(1)*G[i+11][j+11];
+							H1[i][j] += p(1)*max(H2[i+11][j], temp);
 						}
-						temp += p(1)*G[i+11][j+11];
-						H1[i][j] += p(1)*max(H2[i+11][j], temp);
 					}
 					else if(j==1){
-						for(int k=2; k<=10; k++){
+						if(i==0){
+							for(int k=2; k<=10; k++){
+								float temp=0.0;
+								for(int l=2; l<=9; l++){
+									temp += p(l)*G[i+k][11+l];
+								}
+								temp += p(1)*G[i+k][12];
+								temp += p(10)*(-1.5*bet);
+								H1[i][j] += p(k)*max(H1[i+k][j], temp);
+							}
+							H1[i][j] += p(1)*(1.5*bet)*(1-p(10));
+						}
+						else if(i==1){
+							for(int k=2; k<=9; k++){
+								float temp=0.0;
+								for(int l=2; l<=9; l++){
+									temp += p(l)*G[i+k][11+l];
+								}
+								temp += p(1)*G[i+k][12];
+								temp += p(10)*(-1.5*bet);
+								H1[i][j] += p(k)*max(H1[i+k][j], temp);
+							}
 							float temp=0.0;
 							for(int l=2; l<=9; l++){
-								temp += p(l)*G[i+k][11+l];
+								temp += p(l)*E[i+11][11+l];
 							}
-							temp += p(1)*G[i+k][12];
+							temp += p(1)*G[i+11][j+11];
 							temp += p(10)*(-1.5*bet);
-							H1[i][j] += p(k)*max(H1[i+k][j], temp);
+							H1[i][j] += p(1)*max(H2[i+11][j], temp);
+							H1[i][j] += p(10)*(1.5*bet)*(1-p(10));
 						}
-						float temp=0.0;
-						for(int l=2; l<=9; l++){
-							temp += p(l)*E[i+11][11+l];
+						else{
+							for(int k=2; k<=10; k++){
+								float temp=0.0;
+								for(int l=2; l<=9; l++){
+									temp += p(l)*G[i+k][11+l];
+								}
+								temp += p(1)*G[i+k][12];
+								temp += p(10)*(-1.5*bet);
+								H1[i][j] += p(k)*max(H1[i+k][j], temp);
+							}
+							float temp=0.0;
+							for(int l=2; l<=9; l++){
+								temp += p(l)*E[i+11][11+l];
+							}
+							temp += p(1)*G[i+11][j+11];
+							temp += p(10)*(-1.5*bet);
+							H1[i][j] += p(1)*max(H2[i+11][j], temp);
 						}
-						temp += p(1)*G[i+11][j+11];
-						temp += p(10)*(-1.5*bet);
-						H1[i][j] += p(1)*max(H2[i+11][j], temp);
 					}
 					else if(j==0){
-						for(int k=2; k<=10; k++){
+						if(i==0){
+							for(int k=2; k<=10; k++){
+								float temp=0.0;
+								for(int l=2; l<=9; l++){
+									temp += p(l)*E[i+k][10+l];
+								}
+								temp += p(1)*(-1.5*bet);
+								temp += p(10)*E[i+k][20];
+								H1[i][j] += p(k)*max(H1[i+k][j], temp);
+							}
+							H1[i][j] += p(1)*(1.5*bet)*(1-p(1));
+						}
+						else if(i==1){
+							for(int k=2; k<=9; k++){
+								float temp=0.0;
+								for(int l=2; l<=9; l++){
+									temp += p(l)*E[i+k][10+l];
+								}
+								temp += p(1)*(-1.5*bet);
+								temp += p(10)*E[i+k][20];
+								H1[i][j] += p(k)*max(H1[i+k][j], temp);
+							}
 							float temp=0.0;
 							for(int l=2; l<=9; l++){
-								temp += p(l)*E[i+k][10+l];
+								temp += p(l)*E[i+11][10+l];
 							}
 							temp += p(1)*(-1.5*bet);
-							temp += p(10)*E[i+k][20];
-							H1[i][j] += p(k)*max(H1[i+k][j], temp);
+							temp += p(10)*E[i+11][20];
+							H1[i][j] += p(1)*max(H2[i+11][j], temp);
+							H1[i][j] += p(10)*(1.5*bet)*(1-p(1));
 						}
-						float temp=0.0;
-						for(int l=2; l<=9; l++){
-							temp += p(l)*E[i+11][10+l];
+						else{
+							for(int k=2; k<=10; k++){
+								float temp=0.0;
+								for(int l=2; l<=9; l++){
+									temp += p(l)*E[i+k][10+l];
+								}
+								temp += p(1)*(-1.5*bet);
+								temp += p(10)*E[i+k][20];
+								H1[i][j] += p(k)*max(H1[i+k][j], temp);
+							}
+							float temp=0.0;
+							for(int l=2; l<=9; l++){
+								temp += p(l)*E[i+11][10+l];
+							}
+							temp += p(1)*(-1.5*bet);
+							temp += p(10)*E[i+11][20];
+							H1[i][j] += p(1)*max(H2[i+11][j], temp);
 						}
-						temp += p(1)*(-1.5*bet);
-						temp += p(10)*E[i+11][20];
-						H1[i][j] += p(1)*max(H2[i+11][j], temp);
 					}
 				}
 			}
