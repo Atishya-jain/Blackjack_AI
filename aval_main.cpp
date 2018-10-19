@@ -54,7 +54,7 @@ int main(){
 			for(int i=41; i>=0; i--){
 				for(int j=41; j>=0; j--){
 					if(j>21) F[i][j] = bet;
-					else if(j>i) F[i][j] = -bet;
+					else if(j>i && j>=17) F[i][j] = -bet;
 					else if(j<i && j>=17) F[i][j] = bet;
 					else if(i==j && j>17) F[i][j] = 0.0;
 					else if(j>=11 && j<22){
@@ -71,7 +71,7 @@ int main(){
 			for(int i=41; i>=0; i--){
 				for(int j=41; j>=0; j--){
 					if(j>21) G[i][j] = F[i][j-10];
-					else if(j>i) G[i][j] = -bet;
+					else if(j>i && j>17) G[i][j] = -bet;
 					else if(j<i && j>=17) G[i][j] = bet;
 					else if(j>=11 && j<22){
 						for(int k=1; k<=10; k++){
