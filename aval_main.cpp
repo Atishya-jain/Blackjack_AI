@@ -6,18 +6,6 @@ using namespace std;
 float probability;
 float bet;
 
-
-// float E(int x, int y) return hit_with_no_ace[x][y];
-// float G(int x, int y) return hit_with_11_ace[x][y];
-// float F(int x, int y) return hit_with_1_ace[x][y];
-// float H1(int x, int y) return stand_with_no_ace[x][y];
-// float H2(int x, int y) return stand_with_11_ace[x][y];
-// float H3(int x, int y) return stand_with_1_ace[x][y];
-// float D1(int x, int y) return double_with_no_ace[x][y];
-// float D2(int x, int y) return double_with_11_ace[x][y];
-// float D3(int x, int y) return double_with_1_ace[x][y];
-// float S(int x, int y) return split[x][y];
-
 float p(int x){
 	if(x<1) return -1;
 	if(x<10) return (1-probability)/9.0;
@@ -43,6 +31,8 @@ int main(){
 	float D2[42][42];
 	float D3[42][42];
 	float S[42][42];
+
+	//////////INITIALISATION///////////////
 	for(int i=0; i<42; i++){
 		for(int j=0; j<42; j++){
 			E[i][j] = 0;
