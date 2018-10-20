@@ -91,10 +91,26 @@ int main(){
 					else if(j<i && j>=17) E[i][j] = bet;
 					else if(i==j && j>17) E[i][j] = 0.0;
 					else if(i<17 && j<22 && j<=i){
-						for(int k=2; k<=10; k++){
-							E[i][j] += p(k)*E[i][j+k];
+						if(j==0){
+							for(int k=2; k<=10; k++){
+								E[i][j] += p(k)*E[i][j+k];
+							}
+							E[i][j] += p(1)*(-1.5*bet);	
 						}
-						E[i][j] += p(1)*G[i][j+11];
+						else if(j==1){
+							for(int k=2; k<=9; k++){
+								E[i][j] += p(k)*E[i][j+k];
+							}
+							E[i][j] += p(1)*G[i][j+11];
+							E[i][j] += p(10)*(-1.5*bet);
+						}
+						else{
+							for(int k=2; k<=10; k++){
+								E[i][j] += p(k)*E[i][j+k];
+							}
+							E[i][j] += p(1)*G[i][j+11];	
+						}
+						
 					}
 				}
 			}
@@ -346,14 +362,38 @@ int main(){
 		{	///////////////////D1///////////////////////////
 			for(int i=41; i>=0; i--){
 				for(int j=41; j>=0; j--){
-					if(i>21) D1[i][j] = -2*bet;
-					else if(j>21) D1[i][j] = 2*bet;
-					else if(j<22){
+					if(i>=21) D1[i][j] = -2*bet;
+					else if(j>11) D1[i][j] = 0;
+					else if(i>1){
 						for(int k=2; k<=10; k++){
 							D1[i][j] += 2*p(k)*E[i+k][j];
 						}
 						D1[i][j] += 2*p(1)*E[i+11][j];
 					}
+					else if(i==1){
+						for(int k=2; k<=9; k++){
+							D1[i][j] += 2*p(k)*E[i+k][j];
+						}
+						D1[i][j] += 2*p(1)*E[i+11][j];
+						if(j>1) D1[i][j] += 3*p(10)*bet;
+						else if(j==0) D1[i][j] += 3*bet*p(10)*(1-p(1));
+						else if(j==1) D1[i][j] += 3*bet*p(10)*(1-p(10));
+					}
+					else if(i==0){
+						for(int k=2; k<=10; k++){
+							D1[i][j] += 2*p(k)*E[i+k][j];
+						}
+						// D1[i][j] += 2*p(1)*E[i+11][j];
+						if(j>1) D1[i][j] += 3*p(1)*bet;
+						else if(j==0) D1[i][j] += 3*bet*p(1)*(1-p(1));
+						else if(j==1) D1[i][j] += 3*bet*p(1)*(1-p(10));
+					}
+					// else if(j>1){
+					// 	for(int k=2; k<=10; k++){
+					// 		D1[i][j] += 2*p(k)*E[i+k][j];
+					// 	}
+					// 	D1[i][j] += 2*p(1)*E[i+11][j];
+					// }
 				}
 			}
 		}
