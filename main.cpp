@@ -92,41 +92,41 @@ void get_policy(vector<vector<char>>& pol){
             for(int j = 1; j<11; j++){
                 if(H1[i+5][j] > E[i+5][j]){
                     if(H1[i+5][j] > D1[i+5][j]){
-                        pol.push_back('H');
+                        pol[i].push_back('H');
                     }else{
-                        pol.push_back('D');
+                        pol[i].push_back('D');
                     }
                 }else if(E[i+5][j] > D1[i+5][j]){
-                        pol.push_back('S');
+                        pol[i].push_back('S');
                 }else{
-                        pol.push_back('D');
+                        pol[i].push_back('D');
                 }
             }
         }else if(i < 24){
             for(int j = 1; j<11; j++){
                 if(H2[i-2][j] > E[i-2][j]){
                     if(H2[i-2][j] > D2[i-2][j]){
-                        pol.push_back('H');
+                        pol[i].push_back('H');
                     }else{
-                        pol.push_back('D');
+                        pol[i].push_back('D');
                     }
                 }else if(E[i-2][j] > D2[i-2][j]){
-                        pol.push_back('S');
+                        pol[i].push_back('S');
                 }else{
-                        pol.push_back('D');
+                        pol[i].push_back('D');
                 }
             }
         }else if(i < 32){
             for(int j = 1; j<11; j++){
                 float S = get_split(run,j);
                 if((H1[2*run][j]>E[2*run][j]) && (H1[2*run][j]>D1[2*run][j]) && (H1[2*run][j]>S)){
-                    pol.push_back('H');
+                    pol[i].push_back('H');
                 }else if((D1[2*run][j]>E[2*run][j]) && (D1[2*run][j]>H1[2*run][j]) && (D1[2*run][j]>S)){
-                    pol.push_back('D');
-                }else if(S>E[2*run][j]) && (S>H1[2*run][j]) && (D1[2*run][j]<S)){
-                    pol.push_back('P');
+                    pol[i].push_back('D');
+                }else if((S>E[2*run][j]) && (S>H1[2*run][j]) && (D1[2*run][j]<S)){
+                    pol[i].push_back('P');
                 }else{
-                    pol.push_back('S');
+                    pol[i].push_back('S');
                 }
             }
             run++;
@@ -134,13 +134,13 @@ void get_policy(vector<vector<char>>& pol){
             for(int j = 1; j<11; j++){
                 float S = get_split(1,j);
                 if((H2[12][j]>E[12][j]) && (H2[12][j]>D2[12][j]) && (H2[12][j]>S)){
-                    pol.push_back('H');
+                    pol[i].push_back('H');
                 }else if((D2[12][j]>E[12][j]) && (D2[12][j]>H2[12][j]) && (D2[12][j]>S)){
-                    pol.push_back('D');
-                }else if(S>E[12][j]) && (S>H2[12][j]) && (D2[12][j]<S)){
-                    pol.push_back('P');
+                    pol[i].push_back('D');
+                }else if((S>E[12][j]) && (S>H2[12][j]) && (D2[12][j]<S)){
+                    pol[i].push_back('P');
                 }else{
-                    pol.push_back('S');
+                    pol[i].push_back('S');
                 }
             }
         }
@@ -707,6 +707,34 @@ int main(int argc, char **argv){
         }
     }
 
+    for(int i = 0; i<22; i++){
+        for(int j = 0; j<22; j++){
+            cout << H1[i][j] << " ";
+        }cout << endl;
+    }
+    cout << endl;
+    cout << endl;
+    cout << endl;
+
+
+    for(int i = 0; i<22; i++){
+        for(int j = 0; j<22; j++){
+            cout << D1[i][j] << " ";
+        }cout << endl;
+    }
+    cout << endl;
+    cout << endl;
+    cout << endl;
+
+
+    for(int i = 0; i<22; i++){
+        for(int j = 0; j<22; j++){
+            cout << E[i][j] << " ";
+        }cout << endl;
+    }
+    cout << endl;
+    cout << endl;
+    cout << endl;
     // {   ////////////SPLIT///////////////////
     //     {   //////////////////S/////////////////////////
     //         for(int i=4; i<22; i=i+2){
@@ -723,7 +751,6 @@ int main(int argc, char **argv){
     //     }
     // }
     
-    vector<vector<char>>& pol;
     get_policy(pol);
     output_policy(pol);
     return 0;
