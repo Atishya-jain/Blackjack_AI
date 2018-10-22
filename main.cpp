@@ -89,7 +89,7 @@ void get_policy(vector<vector<char>>& pol){
     int run = 2;
 	for(int i = 0; i< pol.size(); i++){
 		if(i < 15){
-            for(int j = 1; j<11; j++){
+            for(int j = 2; j<11; j++){
                 if(H1[i+5][j] > E[i+5][j]){
                     if(H1[i+5][j] > D1[i+5][j]){
                         pol[i].push_back('H');
@@ -102,8 +102,19 @@ void get_policy(vector<vector<char>>& pol){
                         pol[i].push_back('D');
                 }
             }
+            if(H1[i+5][1] > E[i+5][1]){
+                if(H1[i+5][1] > D1[i+5][1]){
+                    pol[i].push_back('H');
+                }else{
+                    pol[i].push_back('D');
+                }
+            }else if(E[i+5][1] > D1[i+5][1]){
+                    pol[i].push_back('S');
+            }else{
+                    pol[i].push_back('D');
+            }
         }else if(i < 24){
-            for(int j = 1; j<11; j++){
+            for(int j = 2; j<11; j++){
                 if(H2[i-2][j] > E[i-2][j]){
                     if(H2[i-2][j] > D2[i-2][j]){
                         pol[i].push_back('H');
@@ -116,8 +127,19 @@ void get_policy(vector<vector<char>>& pol){
                         pol[i].push_back('D');
                 }
             }
+            if(H2[i-2][1] > E[i-2][1]){
+                if(H2[i-2][1] > D2[i-2][1]){
+                    pol[i].push_back('H');
+                }else{
+                    pol[i].push_back('D');
+                }
+            }else if(E[i-2][1] > D2[i-2][1]){
+                    pol[i].push_back('S');
+            }else{
+                    pol[i].push_back('D');
+            }
         }else if(i < 32){
-            for(int j = 1; j<11; j++){
+            for(int j = 2; j<11; j++){
                 float S = get_split(run,j);
                 if((H1[2*run][j]>E[2*run][j]) && (H1[2*run][j]>D1[2*run][j]) && (H1[2*run][j]>S)){
                     pol[i].push_back('H');
@@ -128,6 +150,16 @@ void get_policy(vector<vector<char>>& pol){
                 }else{
                     pol[i].push_back('S');
                 }
+            }
+            float S = get_split(run,1);
+            if((H1[2*run][1]>E[2*run][1]) && (H1[2*run][1]>D1[2*run][1]) && (H1[2*run][1]>S)){
+                pol[i].push_back('H');
+            }else if((D1[2*run][1]>E[2*run][1]) && (D1[2*run][1]>H1[2*run][1]) && (D1[2*run][1]>S)){
+                pol[i].push_back('D');
+            }else if((S>E[2*run][1]) && (S>H1[2*run][1]) && (D1[2*run][1]<S)){
+                pol[i].push_back('P');
+            }else{
+                pol[i].push_back('S');
             }
             run++;
         }else{
@@ -143,6 +175,16 @@ void get_policy(vector<vector<char>>& pol){
                     pol[i].push_back('S');
                 }
             }
+            float S = get_split(1,1);
+            if((H2[12][1]>E[12][1]) && (H2[12][1]>D2[12][1]) && (H2[12][1]>S)){
+                pol[i].push_back('H');
+            }else if((D2[12][1]>E[12][1]) && (D2[12][1]>H2[12][1]) && (D2[12][1]>S)){
+                pol[i].push_back('D');
+            }else if((S>E[12][1]) && (S>H2[12][1]) && (D2[12][1]<S)){
+                pol[i].push_back('P');
+            }else{
+                pol[i].push_back('S');
+            }
         }
 	}
 }
@@ -152,7 +194,7 @@ int main(int argc, char **argv){
         exit(0);
     }
 
-    probability = stoi(argv[1]);
+    probability = stof(argv[1]);
     bet = 1;
     vector<vector<char>> pol;
 
@@ -753,5 +795,6 @@ int main(int argc, char **argv){
     
     get_policy(pol);
     output_policy(pol);
+    cout << probability << endl;
     return 0;
 }
