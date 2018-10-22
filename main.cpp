@@ -522,13 +522,30 @@ int main(int argc, char **argv){
                                     temp += p(l)*E[i+k][j+l];
                                 }
                                 temp += p(1)*G[i+k][j+11];
-                                H1[i][j] += p(k)*max(H1[i+k][j], temp);
+                                // H1[i][j] += p(k)*max(H1[i+k][j], temp);
+                                H1[i][j] += p(k)*max(H1[i+k][j], E[i+k][j]);
+                                if(temp < E[i+k][j]){
+                                    cout << temp << endl << E[i+k][j] << endl; 
+                                    exit(0);
+                                }else if(temp > E[i+k][j]){
+                                    cout << temp << endl << E[i+k][j] << endl; 
+                                    cout << i+k << endl << j << endl;
+                                    exit(0);
+                                }
                             }
                             float temp=0.0;
                             for(int l=2; l<=10; l++){
-                                temp += p(l)*E[i+11][j+l];
+                                if(i+11 <=21){
+                                    temp += p(l)*E[i+11][j+l];
+                                }else{
+                                    temp += p(l)*E[i+1][j+l];
+                                }
                             }
-                            temp += p(1)*G[i+11][j+11];
+                            if(i+11 <= 21){
+                                temp += p(1)*G[i+11][j+11];                                
+                            }else{
+                                temp += p(1)*G[i+1][j+11];                                
+                            }
                             H1[i][j] += p(1)*max(H2[i+11][j], temp);
                         }
                     }
@@ -577,9 +594,17 @@ int main(int argc, char **argv){
                             }
                             float temp=0.0;
                             for(int l=2; l<=9; l++){
-                                temp += p(l)*G[i+11][11+l];
+                                if(i+11 <= 21){
+                                    temp += p(l)*G[i+11][11+l];                                    
+                                }else{
+                                    temp += p(l)*G[i+1][11+l];
+                                }
                             }
-                            temp += p(1)*G[i+11][12];
+                            if(i+11 <= 21){
+                                temp += p(1)*G[i+11][12];
+                            }else{
+                                temp += p(1)*G[i+1][12];
+                            }
                             temp += p(10)*(-1*bet);
                             H1[i][j] += p(1)*max(H2[i+11][j], temp);
                         }
@@ -628,10 +653,18 @@ int main(int argc, char **argv){
                             }
                             float temp=0.0;
                             for(int l=2; l<=9; l++){
-                                temp += p(l)*E[i+11][10+l];
+                                if(i+11 <= 21){
+                                    temp += p(l)*E[i+11][10+l];
+                                }else{
+                                    temp += p(l)*E[i+1][10+l];
+                                }
                             }
                             temp += p(1)*(-1*bet);
-                            temp += p(10)*E[i+11][20];
+                            if(i+11 <= 21){
+                                temp += p(10)*E[i+11][20];
+                            }else{
+                                temp += p(10)*E[i+1][20];
+                            }
                             H1[i][j] += p(1)*max(H2[i+11][j], temp);
                         }
                     }
@@ -715,7 +748,8 @@ int main(int argc, char **argv){
                             for(int k=2; k<=10; k++){
                                 D1[i][j] += 2*p(k)*E[i+k][j];
                             }
-                            D1[i][j] += 2*p(1)*E[i+11][j];
+                            if(i+11 <= 21) D1[i][j] += 2*p(1)*E[i+11][j];
+                            else D1[i][j] += 2*p(1)*E[i+1][j];
                         }
                         // else if(i==1){
                         //     // for(int k=2; k<=9; k++){
@@ -795,6 +829,6 @@ int main(int argc, char **argv){
     
     get_policy(pol);
     output_policy(pol);
-    cout << probability << endl;
+    cout << H1[10][9] << endl << D1[10][9] << endl << E[10][9] << endl;
     return 0;
 }
