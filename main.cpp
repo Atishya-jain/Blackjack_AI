@@ -7,36 +7,36 @@
 using namespace std;
 
 int MIN_INT = numeric_limits<int>::min();
-float probability;
-float bet;
+double probability;
+double bet;
 
-float E[42][42];
-float G[42][42];
-float F[42][42];
-float H1[42][42];
-float H2[42][42];
-float H3[42][42];
-float D1[42][42];
-float D2[42][42];
-float D3[42][42];
-float S[42][42];
+double E[42][42];
+double G[42][42];
+double F[42][42];
+double H1[42][42];
+double H2[42][42];
+double H3[42][42];
+double D1[42][42];
+double D2[42][42];
+double D3[42][42];
+double S[42][42];
 
-float p(int x){
+double p(int x){
     if(x<1) return -1;
     if(x<10) return (1-probability)/9.0;
     else return probability;
 }
 
-float max(float x, float y){
+double max(double x, double y){
     if(x>y) return x;
     else return y;
 }
 
-float get_split(int x, int y){
+double get_split(int x, int y){
     if(x == 1){
-        return 2*H2[11][y];
+        return D2[11][y];
     }else if(x == 10){
-        float temp = 0;
+        double temp = 0;
         for(int i = 2;i < 10; i++){
             temp += p(i)*max(H1[x+i][y], max(E[x+i][y], D1[x+i][y]));
         }
@@ -45,14 +45,15 @@ float get_split(int x, int y){
         return temp;
     }
 
-    float temp = 0;
-    for(int i = 1;i <= 10; i++){
+    double temp = 0;
+    for(int i = 2;i <= 10; i++){
         if(i==x){
             continue;
         }else{
             temp += p(i)*max(H1[x+i][y], max(E[x+i][y], D1[x+i][y]));
         }
     }
+    temp += p(1)*max(H2[x+11][y], max(E[x+11][y], D2[x+11][y]));
     temp = (temp*2)/(1-2*p(x));
     return temp;
 }   
@@ -91,96 +92,96 @@ void get_policy(vector<vector<char>>& pol){
 		if(i < 15){
             for(int j = 2; j<11; j++){
                 if(H1[i+5][j] > E[i+5][j]){
-                    if(H1[i+5][j] > D1[i+5][j]){
+                    if(H1[i+5][j] >= D1[i+5][j]){
                         pol[i].push_back('H');
                     }else{
                         pol[i].push_back('D');
                     }
-                }else if(E[i+5][j] > D1[i+5][j]){
+                }else if(E[i+5][j] >= D1[i+5][j]){
                         pol[i].push_back('S');
                 }else{
                         pol[i].push_back('D');
                 }
             }
-            if(H1[i+5][1] > E[i+5][1]){
-                if(H1[i+5][1] > D1[i+5][1]){
+            if(H1[i+5][1] >= E[i+5][1]){
+                if(H1[i+5][1] >= D1[i+5][1]){
                     pol[i].push_back('H');
                 }else{
                     pol[i].push_back('D');
                 }
-            }else if(E[i+5][1] > D1[i+5][1]){
+            }else if(E[i+5][1] >= D1[i+5][1]){
                     pol[i].push_back('S');
             }else{
                     pol[i].push_back('D');
             }
-        }else if(i < 24){
+        }else if(i < 23){
             for(int j = 2; j<11; j++){
-                if(H2[i-2][j] > E[i-2][j]){
-                    if(H2[i-2][j] > D2[i-2][j]){
+                if(H2[i-2][j] >= E[i-2][j]){
+                    if(H2[i-2][j] >= D2[i-2][j]){
                         pol[i].push_back('H');
                     }else{
                         pol[i].push_back('D');
                     }
-                }else if(E[i-2][j] > D2[i-2][j]){
+                }else if(E[i-2][j] >= D2[i-2][j]){
                         pol[i].push_back('S');
                 }else{
                         pol[i].push_back('D');
                 }
             }
-            if(H2[i-2][1] > E[i-2][1]){
-                if(H2[i-2][1] > D2[i-2][1]){
+            if(H2[i-2][1] >= E[i-2][1]){
+                if(H2[i-2][1] >= D2[i-2][1]){
                     pol[i].push_back('H');
                 }else{
                     pol[i].push_back('D');
                 }
-            }else if(E[i-2][1] > D2[i-2][1]){
+            }else if(E[i-2][1] >= D2[i-2][1]){
                     pol[i].push_back('S');
             }else{
                     pol[i].push_back('D');
             }
         }else if(i < 32){
             for(int j = 2; j<11; j++){
-                float S = get_split(run,j);
-                if((H1[2*run][j]>E[2*run][j]) && (H1[2*run][j]>D1[2*run][j]) && (H1[2*run][j]>S)){
+                double S = get_split(run,j);
+                if((H1[2*run][j]>=E[2*run][j]) && (H1[2*run][j]>=D1[2*run][j]) && (H1[2*run][j]>=S)){
                     pol[i].push_back('H');
-                }else if((D1[2*run][j]>E[2*run][j]) && (D1[2*run][j]>H1[2*run][j]) && (D1[2*run][j]>S)){
+                }else if((D1[2*run][j]>=E[2*run][j]) && (D1[2*run][j]>=H1[2*run][j]) && (D1[2*run][j]>=S)){
                     pol[i].push_back('D');
-                }else if((S>E[2*run][j]) && (S>H1[2*run][j]) && (D1[2*run][j]<S)){
+                }else if((S>=E[2*run][j]) && (S>=H1[2*run][j]) && (D1[2*run][j]<=S)){
                     pol[i].push_back('P');
                 }else{
                     pol[i].push_back('S');
                 }
             }
-            float S = get_split(run,1);
-            if((H1[2*run][1]>E[2*run][1]) && (H1[2*run][1]>D1[2*run][1]) && (H1[2*run][1]>S)){
+            double S = get_split(run,1);
+            if((H1[2*run][1]>=E[2*run][1]) && (H1[2*run][1]>=D1[2*run][1]) && (H1[2*run][1]>=S)){
                 pol[i].push_back('H');
-            }else if((D1[2*run][1]>E[2*run][1]) && (D1[2*run][1]>H1[2*run][1]) && (D1[2*run][1]>S)){
+            }else if((D1[2*run][1]>=E[2*run][1]) && (D1[2*run][1]>=H1[2*run][1]) && (D1[2*run][1]>=S)){
                 pol[i].push_back('D');
-            }else if((S>E[2*run][1]) && (S>H1[2*run][1]) && (D1[2*run][1]<S)){
+            }else if((S>=E[2*run][1]) && (S>=H1[2*run][1]) && (D1[2*run][1]<=S)){
                 pol[i].push_back('P');
             }else{
                 pol[i].push_back('S');
             }
             run++;
         }else{
-            for(int j = 1; j<11; j++){
-                float S = get_split(1,j);
-                if((H2[12][j]>E[12][j]) && (H2[12][j]>D2[12][j]) && (H2[12][j]>S)){
+            for(int j = 2; j<11; j++){
+                double S = get_split(1,j);
+                if((H2[12][j]>=E[12][j]) && (H2[12][j]>=D2[12][j]) && (H2[12][j]>=S)){
                     pol[i].push_back('H');
-                }else if((D2[12][j]>E[12][j]) && (D2[12][j]>H2[12][j]) && (D2[12][j]>S)){
+                }else if((D2[12][j]>=E[12][j]) && (D2[12][j]>=H2[12][j]) && (D2[12][j]>=S)){
                     pol[i].push_back('D');
-                }else if((S>E[12][j]) && (S>H2[12][j]) && (D2[12][j]<S)){
+                }else if((S>=E[12][j]) && (S>=H2[12][j]) && (D2[12][j]<=S)){
                     pol[i].push_back('P');
                 }else{
                     pol[i].push_back('S');
                 }
             }
-            float S = get_split(1,1);
-            if((H2[12][1]>E[12][1]) && (H2[12][1]>D2[12][1]) && (H2[12][1]>S)){
+            double S = get_split(1,1);
+            if((H2[12][1]>=E[12][1]) && (H2[12][1]>=D2[12][1]) && (H2[12][1]>=S)){
                 pol[i].push_back('H');
-            }else if((D2[12][1]>E[12][1]) && (D2[12][1]>H2[12][1]) && (D2[12][1]>S)){
+            }else if((D2[12][1]>=E[12][1]) && (D2[12][1]>=H2[12][1]) && (D2[12][1]>=S)){
                 pol[i].push_back('D');
-            }else if((S>E[12][1]) && (S>H2[12][1]) && (D2[12][1]<S)){
+            }else if((S>=E[12][1]) && (S>=H2[12][1]) && (D2[12][1]<=S)){
                 pol[i].push_back('P');
             }else{
                 pol[i].push_back('S');
@@ -219,7 +220,8 @@ int main(int argc, char **argv){
         {    ///////////////F//////////////////////
             for(int i=41; i>=0; i--){
                 for(int j=41; j>=0; j--){
-                    if(j>21) F[i][j] = bet;                 // Dealer busts
+                    if(i>21) F[i][j] = -bet;
+                    else if(j>21) F[i][j] = bet;                 // Dealer busts
                     else if(j>i && j>=17) F[i][j] = -bet;   // j >= 17
                     else if(j<i && j>=17) F[i][j] = bet;
                     else if(i==j && j>=17) F[i][j] = 0.0;   //push condition & never blackjack here
@@ -236,7 +238,9 @@ int main(int argc, char **argv){
         {   /////////////////G/////////////////////
             for(int i=41; i>=0; i--){                       // Atleast 1 ace of value 11
                 for(int j=41; j>=0; j--){
+                    
                     if(j>21) G[i][j] = F[i][j-10];          // if j > 21 convert 11 valued ace to 1 valued
+                    else if(i>21) G[i][j] = -bet;         
                     else if (j < 11) G[i][j] = MIN_INT;     // if j < 11 G[i][j] is highly negative     
                     else if(j>i && j>=17) G[i][j] = -bet;   // if j >= 17
                     else if(j<i && j>=17) G[i][j] = bet;
@@ -254,8 +258,8 @@ int main(int argc, char **argv){
         {   //////////////////E///////////////////////
             for(int i=41; i>=0; i--){
                 for(int j=41; j>=0; j--){
-                    if(j>21) E[i][j] = bet;                 // I win if dealer busts
-                    else if(i>21) E[i][j] = -bet;           // I lose if I already busted
+                    if(i>21) E[i][j] = -bet;                 // I win if dealer busts
+                    else if(j>21) E[i][j] = bet;           // I lose if I already busted
                     else if(j>i && j>=17) E[i][j] = -bet;   // I lose if I was less when dealer was above 17 with no ace
                     else if(j<i && j>=17 && i!=0) E[i][j] = bet;    // I win if I was greater when dealer was above 17
                     else if(j<i && j>=17 && i==0) E[i][j] = 1.5*bet;    // I win if I was blackjack
@@ -310,19 +314,6 @@ int main(int argc, char **argv){
                             H3[i][j] += p(k)*max(H3[i+k][j], E[i+k][j]);
                         }
                     }
-                    // else if(j==10){
-                    //  for(int k=2; k<=10; k++){
-                    //      float temp = 0.0;
-                    //      for(int l=2; l<=10; l++){
-                    //          temp += p(l)*E[i+k][l+j];
-                    //      }
-                    //      temp += p(1)*(-1.5*bet);
-                    //      H3[i][j] += p(k)*max(H3[i+k][j], temp);
-                    //  }
-                    // }
-                    // else if(j==11){
-
-                    // }
                 }
             }
         }
@@ -339,7 +330,7 @@ int main(int argc, char **argv){
                             if(i+k <= 21){
                                 H2[i][j] += p(k)*max(H2[i+k][j], E[i+k][j]);
                             }else{
-                                H2[i][j] += p(k)*max(H2[i+k][j], E[i+k-10][j]);
+                                H2[i][j] += p(k)*max(H3[i+k-10][j], E[i+k-10][j]);
                             }
                         }
                     }
@@ -353,187 +344,23 @@ int main(int argc, char **argv){
                 for(int j=41; j>=0; j--){
                     if(j>11) H1[i][j] = MIN_INT;
                     else if(i>=21) H1[i][j] = -1*bet;
-                    // else if(j>11 && j<=21){
-                    //  if(j>12){
-                    //      if(i==0){
-                    //          H1[i][j] += (1.5*bet);
-                    //      }
-                    //      if(i==1){
-                    //          H1[i][j] += MIN_INT;
-                    //      }
-                    //      else{
-                    //          if(i==0){
-                    //              H1[i][j] = 1.5*bet;
-                    //          }else{
-                    //              for(int k=2; k<=10; k++){
-                    //                  float temp=0.0;
-                    //                  for(int l=2; l<=10; l++){
-                    //                      temp += p(l)*E[i+k][j+l];
-                    //                  }
-                    //                  temp += p(1)*G[i+k][j+11];
-                    //                  H1[i][j] += p(k)*max(H1[i+k][j], temp);
-                    //              }
-                    //              float temp=0.0;
-                    //              for(int l=2; l<=10; l++){
-                    //                  temp += p(l)*E[i+11][j+l];
-                    //              }
-                    //              temp += p(1)*G[i+11][j+11];
-                    //              H1[i][j] += p(1)*max(H2[i+11][j], temp);
-                    //          }
-                    //      }
-                    //  }
-                    //  else if(j==1){
-                    //      if(i==0){
-                    //          // for(int k=2; k<=10; k++){
-                    //          //  float temp=0.0;
-                    //          //  for(int l=2; l<=9; l++){
-                    //          //      temp += p(l)*G[i+k][11+l];
-                    //          //  }
-                    //          //  temp += p(1)*G[i+k][12];
-                    //          //  temp += p(10)*(-1.5*bet);
-                    //          //  H1[i][j] += p(k)*max(H1[i+k][j], temp);
-                    //          // }
-                    //          H1[i][j] += (1.5*bet)*(1-p(10));
-                    //      }
-                    //      else if(i==1){
-                    //          // for(int k=2; k<=9; k++){
-                    //          //  float temp=0.0;
-                    //          //  for(int l=2; l<=9; l++){
-                    //          //      temp += p(l)*G[i+k][11+l];
-                    //          //  }
-                    //          //  temp += p(1)*G[i+k][12];
-                    //          //  temp += p(10)*(-1.5*bet);
-                    //          //  H1[i][j] += p(k)*max(H1[i+k][j], temp);
-                    //          // }
-                    //          // float temp=0.0;
-                    //          // for(int l=2; l<=9; l++){
-                    //          //  temp += p(l)*E[i+11][11+l];
-                    //          // }
-                    //          // temp += p(1)*G[i+11][j+11];
-                    //          // temp += p(10)*(-1.5*bet);
-                    //          // H1[i][j] += p(1)*max(H2[i+11][j], temp);
-                    //          // H1[i][j] += p(10)*(1.5*bet)*(1-p(10));
-                    //          H1[i][j] += MIN_INT;
-                    //      }
-                    //      else{
-                    //          for(int k=2; k<=10; k++){
-                    //              float temp=0.0;
-                    //              for(int l=2; l<=9; l++){
-                    //                  temp += p(l)*G[i+k][11+l];
-                    //              }
-                    //              temp += p(1)*G[i+k][12];
-                    //              temp += p(10)*(-1*bet);
-                    //              H1[i][j] += p(k)*max(H1[i+k][j], temp);
-                    //          }
-                    //          float temp=0.0;
-                    //          for(int l=2; l<=9; l++){
-                    //              temp += p(l)*G[i+11][11+l];
-                    //          }
-                    //          temp += p(1)*G[i+11][12];
-                    //          temp += p(10)*(-1*bet);
-                    //          H1[i][j] += p(1)*max(H2[i+11][j], temp);
-                    //      }
-                    //  }
-                    //  else if(j==0){
-                    //      if(i==0){
-                    //          // for(int k=2; k<=10; k++){
-                    //          //  float temp=0.0;
-                    //          //  for(int l=2; l<=9; l++){
-                    //          //      temp += p(l)*E[i+k][10+l];
-                    //          //  }
-                    //          //  temp += p(1)*(-1.5*bet);
-                    //          //  temp += p(10)*E[i+k][20];
-                    //          //  H1[i][j] += p(k)*max(H1[i+k][j], temp);
-                    //          // }
-                    //          H1[i][j] += (1.5*bet)*(1-p(1));
-                    //      }
-                    //      else if(i==1){
-                    //          // for(int k=2; k<=9; k++){
-                    //          //  float temp=0.0;
-                    //          //  for(int l=2; l<=9; l++){
-                    //          //      temp += p(l)*E[i+k][10+l];
-                    //          //  }
-                    //          //  temp += p(1)*(-1.5*bet);
-                    //          //  temp += p(10)*E[i+k][20];
-                    //          //  H1[i][j] += p(k)*max(H1[i+k][j], temp);
-                    //          // }
-                    //          // float temp=0.0;
-                    //          // for(int l=2; l<=9; l++){
-                    //          //  temp += p(l)*E[i+11][10+l];
-                    //          // }
-                    //          // temp += p(1)*(-1.5*bet);
-                    //          // temp += p(10)*E[i+11][20];
-                    //          // H1[i][j] += p(1)*max(H2[i+11][j], temp);
-                    //          // H1[i][j] += p(10)*(1.5*bet)*(1-p(1));
-                    //          H1[i][j] += MIN_INT;
-                    //      }
-                    //      else{
-                    //          for(int k=2; k<=10; k++){
-                    //              float temp=0.0;
-                    //              for(int l=2; l<=9; l++){
-                    //                  temp += p(l)*E[i+k][10+l];
-                    //              }
-                    //              temp += p(1)*(-1*bet);
-                    //              temp += p(10)*E[i+k][20];
-                    //              H1[i][j] += p(k)*max(H1[i+k][j], temp);
-                    //          }
-                    //          float temp=0.0;
-                    //          for(int l=2; l<=9; l++){
-                    //              temp += p(l)*E[i+11][10+l];
-                    //          }
-                    //          temp += p(1)*(-1*bet);
-                    //          temp += p(10)*E[i+11][20];
-                    //          H1[i][j] += p(1)*max(H2[i+11][j], temp);
-                    //      }
-                    //  }
-                    // }
+                   
                     else if(j>1){
                         if(i==0){
-                            // for(int k=2; k<=10; k++){
-                            //  float temp=0.0;
-                            //  for(int l=2; l<=10; l++){
-                            //      temp += p(l)*E[i+k][j+l];
-                            //  }
-                            //  temp += p(1)*G[i+k][j+11];
-                            //  H1[i][j] += p(k)*max(H1[i+k][j], temp);
-                            // }
                             H1[i][j] += (1.5*bet);
                         }
                         if(i==1){
-                            // for(int k=2; k<=9; k++){
-                            //  float temp=0.0;
-                            //  for(int l=2; l<=10; l++){
-                            //      temp += p(l)*E[i+k][j+l];
-                            //  }
-                            //  temp += p(1)*G[i+k][j+11];
-                            //  H1[i][j] += p(k)*max(H1[i+k][j], temp);
-                            // }
-                            // float temp=0.0;
-                            // for(int l=2; l<=10; l++){
-                            //  temp += p(l)*E[i+11][j+l];
-                            // }
-                            // temp += p(1)*G[i+11][j+11];
-                            // H1[i][j] += p(1)*max(H2[i+11][j], temp);
                             H1[i][j] += MIN_INT;
                         }else{
                             for(int k=2; k<=10; k++){
-                                float temp=0.0;
+                                double temp=0.0;
                                 for(int l=2; l<=10; l++){
                                     temp += p(l)*E[i+k][j+l];
                                 }
                                 temp += p(1)*G[i+k][j+11];
-                                // H1[i][j] += p(k)*max(H1[i+k][j], temp);
                                 H1[i][j] += p(k)*max(H1[i+k][j], E[i+k][j]);
-                                if(temp < E[i+k][j]){
-                                    cout << temp << endl << E[i+k][j] << endl; 
-                                    exit(0);
-                                }else if(temp > E[i+k][j]){
-                                    cout << temp << endl << E[i+k][j] << endl; 
-                                    cout << i+k << endl << j << endl;
-                                    exit(0);
-                                }
                             }
-                            float temp=0.0;
+                            double temp=0.0;
                             for(int l=2; l<=10; l++){
                                 if(i+11 <=21){
                                     temp += p(l)*E[i+11][j+l];
@@ -551,40 +378,14 @@ int main(int argc, char **argv){
                     }
                     else if(j==1){
                         if(i==0){
-                            // for(int k=2; k<=10; k++){
-                            //  float temp=0.0;
-                            //  for(int l=2; l<=9; l++){
-                            //      temp += p(l)*G[i+k][11+l];
-                            //  }
-                            //  temp += p(1)*G[i+k][12];
-                            //  temp += p(10)*(-1.5*bet);
-                            //  H1[i][j] += p(k)*max(H1[i+k][j], temp);
-                            // }
                             H1[i][j] += (1.5*bet)*(1-p(10));
                         }
                         else if(i==1){
-                            // for(int k=2; k<=9; k++){
-                            //  float temp=0.0;
-                            //  for(int l=2; l<=9; l++){
-                            //      temp += p(l)*G[i+k][11+l];
-                            //  }
-                            //  temp += p(1)*G[i+k][12];
-                            //  temp += p(10)*(-1.5*bet);
-                            //  H1[i][j] += p(k)*max(H1[i+k][j], temp);
-                            // }
-                            // float temp=0.0;
-                            // for(int l=2; l<=9; l++){
-                            //  temp += p(l)*E[i+11][11+l];
-                            // }
-                            // temp += p(1)*G[i+11][j+11];
-                            // temp += p(10)*(-1.5*bet);
-                            // H1[i][j] += p(1)*max(H2[i+11][j], temp);
-                            // H1[i][j] += p(10)*(1.5*bet)*(1-p(10));
                             H1[i][j] += MIN_INT;
                         }
                         else{
                             for(int k=2; k<=10; k++){
-                                float temp=0.0;
+                                double temp=0.0;
                                 for(int l=2; l<=9; l++){
                                     temp += p(l)*G[i+k][11+l];
                                 }
@@ -592,7 +393,7 @@ int main(int argc, char **argv){
                                 temp += p(10)*(-1*bet);
                                 H1[i][j] += p(k)*max(H1[i+k][j], temp);
                             }
-                            float temp=0.0;
+                            double temp=0.0;
                             for(int l=2; l<=9; l++){
                                 if(i+11 <= 21){
                                     temp += p(l)*G[i+11][11+l];                                    
@@ -611,39 +412,13 @@ int main(int argc, char **argv){
                     }
                     else if(j==0){
                         if(i==0){
-                            // for(int k=2; k<=10; k++){
-                            //  float temp=0.0;
-                            //  for(int l=2; l<=9; l++){
-                            //      temp += p(l)*E[i+k][10+l];
-                            //  }
-                            //  temp += p(1)*(-1.5*bet);
-                            //  temp += p(10)*E[i+k][20];
-                            //  H1[i][j] += p(k)*max(H1[i+k][j], temp);
-                            // }
                             H1[i][j] += (1.5*bet)*(1-p(1));
                         }
                         else if(i==1){
-                            // for(int k=2; k<=9; k++){
-                            //  float temp=0.0;
-                            //  for(int l=2; l<=9; l++){
-                            //      temp += p(l)*E[i+k][10+l];
-                            //  }
-                            //  temp += p(1)*(-1.5*bet);
-                            //  temp += p(10)*E[i+k][20];
-                            //  H1[i][j] += p(k)*max(H1[i+k][j], temp);
-                            // }
-                            // float temp=0.0;
-                            // for(int l=2; l<=9; l++){
-                            //  temp += p(l)*E[i+11][10+l];
-                            // }
-                            // temp += p(1)*(-1.5*bet);
-                            // temp += p(10)*E[i+11][20];
-                            // H1[i][j] += p(1)*max(H2[i+11][j], temp);
-                            // H1[i][j] += p(10)*(1.5*bet)*(1-p(1));
                             H1[i][j] += MIN_INT;
                         }else{
                             for(int k=2; k<=10; k++){
-                                float temp=0.0;
+                                double temp=0.0;
                                 for(int l=2; l<=9; l++){
                                     temp += p(l)*E[i+k][10+l];
                                 }
@@ -651,7 +426,7 @@ int main(int argc, char **argv){
                                 temp += p(10)*E[i+k][20];
                                 H1[i][j] += p(k)*max(H1[i+k][j], temp);
                             }
-                            float temp=0.0;
+                            double temp=0.0;
                             for(int l=2; l<=9; l++){
                                 if(i+11 <= 21){
                                     temp += p(l)*E[i+11][10+l];
@@ -718,31 +493,6 @@ int main(int argc, char **argv){
                 for(int j=41; j>=0; j--){
                     if(i>=21) D1[i][j] = -2*bet;
                     else if(j>11) D1[i][j] = MIN_INT;
-                    // else if(j>=11 && j<22){ 
-                    //     if(i>1){
-                    //         for(int k=2; k<=10; k++){
-                    //             if(11+i+k > 21){
-                    //                 D1[i][j] += 2*p(k)*E[11+i+k-10][j];
-                    //             }else{
-                    //                 D1[i][j] += 2*p(k)*E[11+i+k][j];
-                    //             }
-                    //         }
-                    //         D1[i][j] += 2*p(1)*E[i+12][j];
-                    //     }
-                    //     // else if(i==1){
-                    //     //  for(int k=2; k<=10; k++){
-                    //     //      if(11+i+k > 21){
-                    //     //          D1[i][j] += 2*p(k)*E[11+i+k-10][j];
-                    //     //      }else{
-                    //     //          D1[i][j] += 2*p(k)*E[11+i+k][j];
-                    //     //      }
-                    //     //  }
-                    //     //  D1[i][j] += 2*p(1)*E[13][j];
-                    //     // }
-                    //     else if(i==0){
-                    //         D1[i][j] += -2*bet;                             // No double in case of blackjack
-                    //     }
-                    // }
                     else{ 
                         if(i>1){
                             for(int k=2; k<=10; k++){
@@ -751,84 +501,19 @@ int main(int argc, char **argv){
                             if(i+11 <= 21) D1[i][j] += 2*p(1)*E[i+11][j];
                             else D1[i][j] += 2*p(1)*E[i+1][j];
                         }
-                        // else if(i==1){
-                        //     // for(int k=2; k<=9; k++){
-                        //     //  D1[i][j] += 2*p(k)*E[i+k][j];
-                        //     // }
-                        //     // D1[i][j] += 2*p(1)*E[i+11][j];
-                        //     // if(j>1) D1[i][j] += 3*p(10)*bet;
-                        //     // else if(j==0) D1[i][j] += 3*bet*p(10)*(1-p(1));
-                        //     // else if(j==1) D1[i][j] += 3*bet*p(10)*(1-p(10));
-                        //     D1[i][j] += MIN_INT;
-                        // }
-                        // else if(i==0){
-                        //     // for(int k=2; k<=10; k++){
-                        //     //  D1[i][j] += 2*p(k)*E[i+k][j];
-                        //     // }
-                        //     // // D1[i][j] += 2*p(1)*E[i+11][j];
-                        //     // if(j>1) D1[i][j] += 3*p(1)*bet;
-                        //     // else if(j==0) D1[i][j] += 3*bet*p(1)*(1-p(1));
-                        //     // else if(j==1) D1[i][j] += 3*bet*p(1)*(1-p(10));
-                        //     D1[i][j] += -2*bet;                             // No double in case of blackjack
-                        // }
                     }
-                    // else if(j>1){
-                    //  for(int k=2; k<=10; k++){
-                    //      D1[i][j] += 2*p(k)*E[i+k][j];
-                    //  }
-                    //  D1[i][j] += 2*p(1)*E[i+11][j];
-                    // }
                 }
             }
         }
     }
 
-    for(int i = 0; i<22; i++){
-        for(int j = 0; j<22; j++){
-            cout << H1[i][j] << " ";
-        }cout << endl;
-    }
-    cout << endl;
-    cout << endl;
-    cout << endl;
-
-
-    for(int i = 0; i<22; i++){
-        for(int j = 0; j<22; j++){
-            cout << D1[i][j] << " ";
-        }cout << endl;
-    }
-    cout << endl;
-    cout << endl;
-    cout << endl;
-
-
-    for(int i = 0; i<22; i++){
-        for(int j = 0; j<22; j++){
-            cout << E[i][j] << " ";
-        }cout << endl;
-    }
-    cout << endl;
-    cout << endl;
-    cout << endl;
-    // {   ////////////SPLIT///////////////////
-    //     {   //////////////////S/////////////////////////
-    //         for(int i=4; i<22; i=i+2){
-    //             for(int j=0; j<42; j++){
-    //                 if(j>21) S[i][j] = bet;
-    //                 else if(j<22){
-    //                     S[i][j] = 2*max(H1[i][j], E[i][j]);
-    //                 }
-    //             }
-    //         }
-    //         for(int j=0; j<42; j++){
-    //             S[2][j] = 2*max(H2[2][j], G[2][j]); 
-    //         }
-    //     }
-    // }
-    
+   
     get_policy(pol);
     output_policy(pol);
-    cout << H1[10][9] << endl << D1[10][9] << endl << E[10][9] << endl;
+    // cout << get_split(4,5) << endl << H1[8][5] << endl << D1[8][5] << endl << E[8][5] << endl;
+    cout << H2[15][4] << endl << D2[15][4] << endl << E[15][4] << endl;
+    // for(int i=2; i<=21; i++){
+        cout << G[14][16] << endl;
+    // }
     return 0;
 }
