@@ -71,7 +71,10 @@ void output_policy(vector<vector<char>>& pol){
     for(int i = 0; i<mapp.size(); i++){
     	outfile << mapp[i] << "\t";
     	for(int j = 0; j<pol[i].size(); j++){
-    		outfile << pol[i][j] << " ";
+    		outfile << pol[i][j];
+            if(j < pol[i].size() - 1){
+                outfile << " ";
+            }
     	}
     	if(i < mapp.size() - 1){
 	    	outfile << "\n";
@@ -511,9 +514,57 @@ int main(int argc, char **argv){
     get_policy(pol);
     output_policy(pol);
     // cout << get_split(4,5) << endl << H1[8][5] << endl << D1[8][5] << endl << E[8][5] << endl;
-    cout << H2[15][4] << endl << D2[15][4] << endl << E[15][4] << endl;
-    // for(int i=2; i<=21; i++){
-        cout << G[14][16] << endl;
+    // cout << H2[15][4] << endl << D2[15][4] << endl << E[15][4] << endl;
+    // cout << H2[13][6] << endl;
+    
+    cout << H1[11][10] << endl << D1[11][10] << endl << endl << endl;
+    cout << H1[11][10] << endl << D1[11][10] << endl << endl << endl;
+    cout << H1[11][10] << endl << D1[11][10] << endl << endl << endl;
+    // cout << "hard hit\n";
+    // for(int i=5; i<=19; i++){
+        for(int j = 12; j<=21; j++){
+            cout << E[j][10] << " ";
+        }cout << endl;
     // }
+    // cout << endl;
+    // cout << "soft hit\n";
+    // for(int i=13; i<=20; i++){
+    //     for(int j = 1; j<=10; j++){
+    //         cout << H2[i][j] << " ";
+    //     }cout << endl;
+    // }
+    // cout << endl;
+    // cout << "stand\n";
+    // for(int i=5; i<=19; i++){
+    //     for(int j = 1; j<=10; j++){
+    //         cout << E[i][j] << " ";
+    //     }cout << endl;
+    // }
+    // cout << endl;
+
+    // cout << "Double hard\n";
+    // for(int i=5; i<=19; i++){
+    //     for(int j = 1; j<=10; j++){
+    //         cout << D1[i][j] << " ";
+    //     }cout << endl;
+    // }
+    // cout << endl;
+
+    // cout << "Double soft\n";
+    // for(int i=13; i<=20; i++){
+    //     for(int j = 1; j<=10; j++){
+    //         cout << D2[i][j] << " ";
+    //     }cout << endl;
+    // }
+    // cout << endl;
+
+    // cout << "Split\n";
+    // for(int i=1; i<=10; i++){
+    //     for(int j = 1; j<=10; j++){
+    //         cout << get_split(i,j) << " ";
+    //     }cout << endl;
+    // }
+    // cout << endl;
+
     return 0;
 }
