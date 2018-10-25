@@ -93,7 +93,7 @@ void get_policy(vector<vector<char>>& pol){
     int run = 2;
 	for(int i = 0; i< pol.size(); i++){
 		if(i < 15){
-            for(int j = 2; j<11; j++){
+            for(int j = 2; j<10; j++){
                 if(H1[i+5][j] > E[i+5][j]){
                     if(H1[i+5][j] >= D1[i+5][j]){
                         pol[i].push_back('H');
@@ -106,6 +106,19 @@ void get_policy(vector<vector<char>>& pol){
                         pol[i].push_back('D');
                 }
             }
+
+            if(H1[i+5][0] > E[i+5][0]){
+                if(H1[i+5][0] >= D1[i+5][0]){
+                    pol[i].push_back('H');
+                }else{
+                    pol[i].push_back('D');
+                }
+            }else if(E[i+5][0] >= D1[i+5][0]){
+                    pol[i].push_back('S');
+            }else{
+                    pol[i].push_back('D');
+            }
+
             if(H1[i+5][1] >= E[i+5][1]){
                 if(H1[i+5][1] >= D1[i+5][1]){
                     pol[i].push_back('H');
@@ -118,7 +131,7 @@ void get_policy(vector<vector<char>>& pol){
                     pol[i].push_back('D');
             }
         }else if(i < 23){
-            for(int j = 2; j<11; j++){
+            for(int j = 2; j<10; j++){
                 if(H2[i-2][j] >= E[i-2][j]){
                     if(H2[i-2][j] >= D2[i-2][j]){
                         pol[i].push_back('H');
@@ -131,6 +144,19 @@ void get_policy(vector<vector<char>>& pol){
                         pol[i].push_back('D');
                 }
             }
+            
+            if(H2[i-2][0] >= E[i-2][0]){
+                if(H2[i-2][0] >= D2[i-2][0]){
+                    pol[i].push_back('H');
+                }else{
+                    pol[i].push_back('D');
+                }
+            }else if(E[i-2][0] >= D2[i-2][0]){
+                    pol[i].push_back('S');
+            }else{
+                    pol[i].push_back('D');
+            }
+
             if(H2[i-2][1] >= E[i-2][1]){
                 if(H2[i-2][1] >= D2[i-2][1]){
                     pol[i].push_back('H');
@@ -143,7 +169,7 @@ void get_policy(vector<vector<char>>& pol){
                     pol[i].push_back('D');
             }
         }else if(i < 32){
-            for(int j = 2; j<11; j++){
+            for(int j = 2; j<10; j++){
                 double S = get_split(run,j);
                 if((H1[2*run][j]>=E[2*run][j]) && (H1[2*run][j]>=D1[2*run][j]) && (H1[2*run][j]>=S)){
                     pol[i].push_back('H');
@@ -155,7 +181,19 @@ void get_policy(vector<vector<char>>& pol){
                     pol[i].push_back('S');
                 }
             }
-            double S = get_split(run,1);
+            
+            double S = get_split(run,0);
+            if((H1[2*run][0]>=E[2*run][0]) && (H1[2*run][0]>=D1[2*run][0]) && (H1[2*run][0]>=S)){
+                pol[i].push_back('H');
+            }else if((D1[2*run][0]>=E[2*run][0]) && (D1[2*run][0]>=H1[2*run][0]) && (D1[2*run][0]>=S)){
+                pol[i].push_back('D');
+            }else if((S>=E[2*run][0]) && (S>=H1[2*run][0]) && (D1[2*run][0]<=S)){
+                pol[i].push_back('P');
+            }else{
+                pol[i].push_back('S');
+            }
+
+            S = get_split(run,1);
             if((H1[2*run][1]>=E[2*run][1]) && (H1[2*run][1]>=D1[2*run][1]) && (H1[2*run][1]>=S)){
                 pol[i].push_back('H');
             }else if((D1[2*run][1]>=E[2*run][1]) && (D1[2*run][1]>=H1[2*run][1]) && (D1[2*run][1]>=S)){
@@ -167,7 +205,7 @@ void get_policy(vector<vector<char>>& pol){
             }
             run++;
         }else{
-            for(int j = 2; j<11; j++){
+            for(int j = 2; j<10; j++){
                 double S = get_split(1,j);
                 if((H2[12][j]>=E[12][j]) && (H2[12][j]>=D2[12][j]) && (H2[12][j]>=S)){
                     pol[i].push_back('H');
@@ -179,7 +217,19 @@ void get_policy(vector<vector<char>>& pol){
                     pol[i].push_back('S');
                 }
             }
-            double S = get_split(1,1);
+
+            double S = get_split(1,0);
+            if((H2[12][0]>=E[12][0]) && (H2[12][0]>=D2[12][0]) && (H2[12][0]>=S)){
+                pol[i].push_back('H');
+            }else if((D2[12][0]>=E[12][0]) && (D2[12][0]>=H2[12][0]) && (D2[12][0]>=S)){
+                pol[i].push_back('D');
+            }else if((S>=E[12][0]) && (S>=H2[12][0]) && (D2[12][0]<=S)){
+                pol[i].push_back('P');
+            }else{
+                pol[i].push_back('S');
+            }
+
+            S = get_split(1,1);
             if((H2[12][1]>=E[12][1]) && (H2[12][1]>=D2[12][1]) && (H2[12][1]>=S)){
                 pol[i].push_back('H');
             }else if((D2[12][1]>=E[12][1]) && (D2[12][1]>=H2[12][1]) && (D2[12][1]>=S)){
@@ -513,58 +563,5 @@ int main(int argc, char **argv){
    
     get_policy(pol);
     output_policy(pol);
-    // cout << get_split(4,5) << endl << H1[8][5] << endl << D1[8][5] << endl << E[8][5] << endl;
-    // cout << H2[15][4] << endl << D2[15][4] << endl << E[15][4] << endl;
-    // cout << H2[13][6] << endl;
-    
-    cout << H1[11][10] << endl << D1[11][10] << endl << endl << endl;
-    cout << H1[11][10] << endl << D1[11][10] << endl << endl << endl;
-    cout << H1[11][10] << endl << D1[11][10] << endl << endl << endl;
-    // cout << "hard hit\n";
-    // for(int i=5; i<=19; i++){
-        for(int j = 12; j<=21; j++){
-            cout << E[j][10] << " ";
-        }cout << endl;
-    // }
-    // cout << endl;
-    // cout << "soft hit\n";
-    // for(int i=13; i<=20; i++){
-    //     for(int j = 1; j<=10; j++){
-    //         cout << H2[i][j] << " ";
-    //     }cout << endl;
-    // }
-    // cout << endl;
-    // cout << "stand\n";
-    // for(int i=5; i<=19; i++){
-    //     for(int j = 1; j<=10; j++){
-    //         cout << E[i][j] << " ";
-    //     }cout << endl;
-    // }
-    // cout << endl;
-
-    // cout << "Double hard\n";
-    // for(int i=5; i<=19; i++){
-    //     for(int j = 1; j<=10; j++){
-    //         cout << D1[i][j] << " ";
-    //     }cout << endl;
-    // }
-    // cout << endl;
-
-    // cout << "Double soft\n";
-    // for(int i=13; i<=20; i++){
-    //     for(int j = 1; j<=10; j++){
-    //         cout << D2[i][j] << " ";
-    //     }cout << endl;
-    // }
-    // cout << endl;
-
-    // cout << "Split\n";
-    // for(int i=1; i<=10; i++){
-    //     for(int j = 1; j<=10; j++){
-    //         cout << get_split(i,j) << " ";
-    //     }cout << endl;
-    // }
-    // cout << endl;
-
     return 0;
 }
